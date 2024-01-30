@@ -1,7 +1,12 @@
+package server;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+
+import game.Game;
+import game.GameState;
 
 public class Server {
 
@@ -14,7 +19,9 @@ public class Server {
 
     public void startServer() {
         System.out.println("Server starting...");
-        GameState game = new GameState("broski");
+        GameState gameState = new GameState();
+        Game game = new Game(gameState);
+        game.start();
         try {
             // continuously accept new incoming connections and add client handlers for each
             while (!serverSocket.isClosed()) {
@@ -26,8 +33,6 @@ public class Server {
                 new Thread(newClient).start();
                 System.out.println("New client thread started");
 
-                // TODO remove this is a test of sending an object
-                updateClients(game);
             }
         } catch (IOException e) {
             closeServerSocket();

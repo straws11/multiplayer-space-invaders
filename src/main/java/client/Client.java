@@ -1,3 +1,7 @@
+package client;
+
+import game.GameState;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -37,9 +41,6 @@ public class Client {
                         Object receivedObject = objectInputStream.readObject();
                         System.out.println("Object received from server");
                         // TODO process object, update local display and GUI etc
-                        System.out.println(
-                                ((GameState) receivedObject).getData()
-                        );
                     } catch (IOException | ClassNotFoundException e) { // TODO i don't think ClassNotFound should go here
                         e.printStackTrace();
                     }

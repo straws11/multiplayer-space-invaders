@@ -5,10 +5,10 @@ import java.awt.event.KeyListener;
 
 public class KeyboardInputHandler implements KeyListener {
 
-    private GameClientGUI gameClientGui;
+    private ClientGameGUI clientGameGui;
 
-    public KeyboardInputHandler(GameClientGUI gameClientGui) {
-        this.gameClientGui = gameClientGui;
+    public KeyboardInputHandler(ClientGameGUI clientGameGui) {
+        this.clientGameGui = clientGameGui;
         // TODO maybe move this to live in Client instead of clientgui?? bit weird
     }
 
@@ -20,7 +20,7 @@ public class KeyboardInputHandler implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        gameClientGui.sendKeyPressCode(keyCode);
+        clientGameGui.sendKeyPressCode(keyCode);
     }
 
     @Override

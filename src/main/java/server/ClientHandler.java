@@ -1,11 +1,9 @@
 package server;
 
-import shared.GameState;
 import shared.PlayerInput;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
 
 public class ClientHandler implements Runnable {
 
@@ -93,8 +91,9 @@ public class ClientHandler implements Runnable {
                     Object receivedObject = objectInputStream.readObject();
                     // can process based on type:
                     // if (receivedObject instanceof GameState) doThis()
-                    server.updateGameInput(receivedObject);
-
+                    if (receivedObject instanceof PlayerInput) {
+                        server.updateGameInput((PlayerInput) receivedObject);
+                    }
                 } catch (EOFException e) {
                     //System.out.println("Client Disconnected!"); correction: going to disconnect
                     break;

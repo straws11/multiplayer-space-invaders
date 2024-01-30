@@ -1,13 +1,17 @@
 package server;
 
-import shared.GameState;
+import shared.GameStateChange;
+import shared.Player;
 
 public class GameLogic {
-    private GameState gameState;
+    private GameStateChange gameStateChange;
     private boolean gameOver;
 
-    public GameLogic(GameState gameState) {
-        this.gameState = gameState;
+    private Player player;
+
+    public GameLogic() {
+        // gameStateChange keeps track of all changes since last network send
+        this.gameStateChange = new GameStateChange();
         this.gameOver = false;
     }
     public void moveLeft() {
@@ -20,6 +24,13 @@ public class GameLogic {
     }
 
     public void enemyHit() {
-        gameState.removeLife();
+
+    }
+
+    /**
+     * Called when the game state has been sent to clients. Only keep track of changes onward
+     */
+    public void clearGameStateChange() {
+        this.gameStateChange = new GameStateChange();
     }
 }

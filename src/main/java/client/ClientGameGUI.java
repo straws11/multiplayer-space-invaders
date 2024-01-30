@@ -5,7 +5,7 @@ import shared.PlayerInput;
 import javax.swing.*;
 import java.awt.*;
 
-public class GameClientGUI extends JFrame {
+public class ClientGameGUI extends JFrame {
 
     private Client client;
     private KeyboardInputHandler keyboardInputHandler;
@@ -14,7 +14,7 @@ public class GameClientGUI extends JFrame {
     private JPanel startPanel;
     private JPanel gamePanel;
 
-    public GameClientGUI(Client client) {
+    public ClientGameGUI(Client client) {
         super("Game Client");
 
         this.client = client;
@@ -48,7 +48,7 @@ public class GameClientGUI extends JFrame {
 
         startButton.addActionListener(e -> {
             //handle button click event
-            client.connectToServer("localhost", 1234);
+            client.networkManager.connectToServer("localhost", 1234);
             cardLayout.show(mainPanel, "game");
         });
 
@@ -60,9 +60,8 @@ public class GameClientGUI extends JFrame {
 
         quitButton.addActionListener(e -> {
             cardLayout.show(mainPanel, "start");
-            client.closeConnection(); // disconnect from server
+            client.networkManager.closeConnection(); // disconnect from server
         });
-
 
         // add game and start panel to main
         mainPanel.add(startPanel, "start");
@@ -72,6 +71,6 @@ public class GameClientGUI extends JFrame {
 
     public void sendKeyPressCode(int keyCode) {
         PlayerInput playerInput = new PlayerInput(keyCode);
-        this.client.sendObject(playerInput);
+        client.networkManager.sendObject(playerInput);
     }
 }

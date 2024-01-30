@@ -5,14 +5,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import shared.GameState;
+import shared.GameStateChange;
+import shared.PlayerInput;
 
 public class Server {
 
     private ArrayList<ClientHandler> connectedClients;
     private boolean gameStarted = false;
 
-    GameState gameState;
+    GameStateChange gameStateChange;
     Game game;
     ServerSocket serverSocket;
     public Server(ServerSocket serverSocket) {
@@ -82,10 +83,9 @@ public class Server {
     }
 
     /**
-     * Send new update object received from client handler to Game object.
-     * @param newObject The new update data
+     * Send player input object received from the client handler
      */
-    public void updateGameInput(Object newObject) {
-        this.game.enqueueUpdate(newObject);
+    public void updateGameInput(PlayerInput playerInput) {
+        this.game.enqueuePlayerInput(playerInput);
     }
 }

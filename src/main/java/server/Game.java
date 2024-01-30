@@ -1,6 +1,6 @@
 package server;
 
-import shared.GameState;
+import shared.GameStateChange;
 import shared.PlayerInput;
 
 import java.awt.event.KeyEvent;
@@ -9,26 +9,26 @@ import java.util.Queue;
 
 public class Game implements Runnable {
 
-    private GameState gameState;
+    private GameStateChange gameStateChange;
     private GameLogic gameLogic;
 
-    private Queue<Object> updateQueue;
+    private Queue<PlayerInput> updateQueue;
 
     private boolean running;
     public Game() {
-        this.gameState = new GameState();
-        this.gameLogic = new GameLogic(this.gameState);
+        this.gameStateChange = new GameStateChange();
+        this.gameLogic = new GameLogic();
 
         this.updateQueue = new LinkedList<>();
         this.running = false;
     }
 
     /**
-     * Add new received update to Queue to process upon next update() call
-     * @param updateObject New object received
+     * Add new received player input update to queue to process upon next update() call
+     * @param inputObject New PlayerInput object received
      */
-   public void enqueueUpdate(Object updateObject) {
-        this.updateQueue.add(updateObject);
+   public void enqueuePlayerInput(PlayerInput inputObject) {
+        this.updateQueue.add(inputObject);
    }
 
     public void start() {
@@ -48,63 +48,32 @@ public class Game implements Runnable {
     private void update() {
         // process all new inputs received since last time update() was called
         processQueuedInput();
-    }
-
-    private void processQueuedInput() {
-        while (!updateQueue.isEmpty()) {
-            Object nextUpdate = updateQueue.poll();
-
-            // differentiate between input types
-            // this is the first time since object received that we determine this
-            if (nextUpdate instanceof PlayerInput) {
-                PlayerInput newPlayerInput = (PlayerInput) nextUpdate;
-                processPlayerInput(newPlayerInput.getKeyCode());
-
-            } else if (nextUpdate instanceof  GameState) {
-                GameState newGameState = (GameState) nextUpdate;
-                processStateChanges(newGameState);
-
-            }
-        }
-    }
-
-    private void processStateChanges(GameState state) {
-
+        // TODO enemies need to move again, bullets further travel etc??
     }
 
     /**
-     * Call appropriate game logic method to handle player key press input
-     * @param keyCode KeyEvent int code corresponding to a pressed key.
+     * Call appropriate game logic method to handle player key press input for each update
      */
-    private void processPlayerInput(int keyCode) {
-        switch (keyCode) {
-            case KeyEvent.VK_LEFT:
-                gameLogic.moveLeft();
-                break;
-            case KeyEvent.VK_RIGHT:
-                gameLogic.moveRight();
-                break;
-            case KeyEvent.VK_SPACE:
-                gameLogic.shoot();
-                break;
-            default: // not a key relevant for this game
-                break;
+    private void processQueuedInput() {
+        while (!updateQueue.isEmpty()) {
+            PlayerInput nextInput = updateQueue.poll();
+
+            int keyCode = nextInput.getKeyCode();
+
+            switch (keyCode) {
+                case KeyEvent.VK_LEFT:
+                    gameLogic.moveLeft();
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    gameLogic.moveRight();
+                    break;
+                case KeyEvent.VK_SPACE:
+                    gameLogic.shoot();
+                    break;
+                default: // not a key relevant for this game
+                    break;
+            }
         }
-    }
-
-    private void handleMouseClicked() {
-    }
-
-    private boolean mouseClicked() {
-        return false;
-    }
-
-    private void handleKeyPress() {
-
-    }
-
-    private boolean keyPressed() {
-        return false;
     }
 
     @Override

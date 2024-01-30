@@ -5,7 +5,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import client.Game;
 import shared.GameState;
 
 public class Server {
@@ -23,8 +22,7 @@ public class Server {
 
     public void startServer() {
         System.out.println("Server starting...");
-        gameState = new GameState();
-        game = new Game(gameState);
+        game = new Game(); // TODO move
 
         try {
             // continuously accept new incoming connections and add client handlers for each
@@ -35,9 +33,9 @@ public class Server {
                 ClientHandler newClient = new ClientHandler(socket, this);
                 connectedClients.add(newClient);
                 new Thread(newClient).start();
-                System.out.println("SERVER: New client thread started");
+                System.out.println("SERVER: New client connected");
                 // if at least one client, start a game
-                if (!gameStarted && !connectedClients.isEmpty()) {
+                if (!gameStarted && !connectedClients.isEmpty()) {// TODO move this somewhere else
                     game.start();
                     System.out.println("SERVER: Game started");
                     gameStarted = true;
@@ -79,6 +77,15 @@ public class Server {
         if (connectedClients.isEmpty()) {
             game.stop();
             System.out.println("SERVER: Game ended, no players");
+            gameStarted = false;
         }
+    }
+
+    /**
+     * Send new update object received from client handler to Game object.
+     * @param newObject The new update data
+     */
+    public void updateGameInput(Object newObject) {
+        this.game.enqueueUpdate(newObject);
     }
 }

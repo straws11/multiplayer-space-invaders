@@ -52,9 +52,7 @@ public class Client {
         }).start();
     }
 
-    /**
-     * Listen for client game input, runs on a separate thread.
-     */
+    /** Replaced
     private void startInputListener() {
         new Thread( new Runnable() {
             @Override
@@ -66,10 +64,24 @@ public class Client {
 
             }
         }).start();
+    } */
+
+    /**
+     * Send object from client to server
+     * @param object object to send, any type
+     */
+    public void sendObject(Object object) {
+        try {
+            objectOutputStream.writeObject(object);
+            objectOutputStream.flush();
+        } catch (IOException e) {
+            closeConnection();
+        }
+
     }
 
 
-    private void closeConnection() {
+    public void closeConnection() {
         try {
             if (bufferedReader != null) {
                 bufferedReader.close();
@@ -89,9 +101,7 @@ public class Client {
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.println("surely not");
         Client client = new Client("placeholder");
-        System.out.println("problem?");
 
         // launch GUI
         SwingUtilities.invokeLater(() -> {

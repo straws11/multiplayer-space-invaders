@@ -1,7 +1,6 @@
 package client;
 
-import game.GameState;
-
+import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 
@@ -13,19 +12,23 @@ public class Client {
     private ObjectOutputStream objectOutputStream;
     String username;
 
-    public Client(Socket socket, String username) {
+    public Client(String username) {
+        this.username = username;
+    }
+
+    public void connectToServer(String serverAddress, int port) {
         try {
-            this.socket = socket;
-            this.username = username;
+            this.socket = new Socket(serverAddress, port);
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             this.objectInputStream = new ObjectInputStream(socket.getInputStream());
-
-
+            // start listeners
+            startReceiveDataListener();
+            startInputListener();
         } catch (IOException e) {
-            closeConnection();
+            System.out.println("Failed to connect, server address or port not right");
+            e.printStackTrace();
         }
-
     }
 
     /**
@@ -86,11 +89,14 @@ public class Client {
     }
 
     public static void main(String[] args) throws IOException {
-        Socket socket = new Socket("localhost", 1234);
-        Client client = new Client(socket, "placeholder");
-        System.out.println("Client Created");
-        // start listeners
-        client.startReceiveDataListener();
-        client.startInputListener();
+        System.out.println("surely not");
+        Client client = new Client("placeholder");
+        System.out.println("problem?");
+
+        // launch GUI
+        SwingUtilities.invokeLater(() -> {
+            GameClientGUI gameClientGui = new GameClientGUI(client);
+            gameClientGui.setVisible(true);
+        });
     }
 }

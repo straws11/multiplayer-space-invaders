@@ -7,15 +7,17 @@ import java.util.ArrayList;
 public class ClientHandler implements Runnable {
 
     private Socket socket;
+    private Server server;
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
     private String username;
 
-    public ClientHandler(Socket socket) throws IOException {
+    public ClientHandler(Socket socket, Server server) throws IOException {
 
         this.socket = socket;
+        this.server = server;
         // for the game state data
         this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
         this.objectInputStream = new ObjectInputStream(socket.getInputStream());
@@ -71,10 +73,11 @@ public class ClientHandler implements Runnable {
             if (socket != null) {
                 socket.close();
             }
+            // remove from client handler list
+            server.removeClientHandler(this);
+
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            System.out.println("Client Disconnected!");
         }
     }
 

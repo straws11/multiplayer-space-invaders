@@ -1,4 +1,6 @@
-package game;
+package client;
+
+import shared.GameState;
 
 public class Game implements Runnable {
 
@@ -90,7 +92,7 @@ public class Game implements Runnable {
 
             if (System.currentTimeMillis() - timer > 1000) { // checks if a second has passed
                 timer += 1000;
-                System.out.println("updates: " + updates + ", frames: " + frames);
+                //System.out.println("updates: " + updates + ", frames: " + frames);
                 updates = 0;
                 frames = 0;
             }

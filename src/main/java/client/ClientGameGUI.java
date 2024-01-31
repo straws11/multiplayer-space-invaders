@@ -1,9 +1,12 @@
 package client;
 
+import shared.Player;
 import shared.PlayerInput;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 public class ClientGameGUI extends JFrame {
 
@@ -13,17 +16,59 @@ public class ClientGameGUI extends JFrame {
     private CardLayout cardLayout; // this allows switching between panels that live on mainpanel
     private JPanel startPanel;
     private JPanel gamePanel;
+    private Map<Integer, JLabel> playerSprites;
 
     public ClientGameGUI(Client client) {
         super("Game Client");
 
         this.client = client;
+        this.playerSprites = new HashMap<>();
         // since I'm inheriting, setsize is like doing JFrame.setsize etc etc
 
         // init and setup gui stuff
         initializeComponents();
         setupLayout();
         keyboardInputHandler = new KeyboardInputHandler(this);
+    }
+
+    /**
+     * Remove old player sprites, add new ones and call to draw on updated positions
+     * @param updatedPlayers ArrayList from ClientGameLogic
+     */
+    public void processUpdatedPlayers(ArrayList<Player> updatedPlayers) {
+        // remove players that are no longer present (not in updatedPlayers anymore)
+        List<Integer> playerIds = updatedPlayers.stream().map(Player::getId).toList();
+        //  iterator approach to avoid skipping over deleted elements, remove from gamePanel
+        for (Iterator<Map.Entry<Integer, JLabel>> iterator = playerSprites.entrySet().iterator(); iterator.hasNext();) {
+            Map.Entry<Integer, JLabel> entry = iterator.next();
+            if (!playerIds.contains(entry.getKey())) {
+                iterator.remove();
+                gamePanel.remove(entry.getValue());
+            }
+        }
+
+        // either draw or add and draw player sprites
+        for (Player player: updatedPlayers) {
+            int pId = player.getId();
+            if (!playerSprites.containsKey(pId)) {
+                // add sprites for each new player
+                JLabel newSprite = new JLabel(Integer.toString(pId));
+                this.playerSprites.put(pId, newSprite);
+                gamePanel.add(newSprite);
+            }
+            drawPlayer(playerSprites.get(pId));
+        }
+
+        gamePanel.revalidate();
+        gamePanel.repaint();
+    }
+
+    /**
+     * Draw a single player's sprite
+     * @param sprite
+     */
+    private void drawPlayer(JLabel sprite) {
+
     }
 
     private void setupLayout() {

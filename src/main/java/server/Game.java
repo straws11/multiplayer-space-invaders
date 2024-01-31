@@ -15,9 +15,9 @@ public class Game implements Runnable {
     private Queue<PlayerInput> updateQueue;
 
     private boolean running;
-    public Game() {
+    public Game(Server server) {
         this.gameStateChange = new GameStateChange();
-        this.gameLogic = new GameLogic();
+        this.gameLogic = new GameLogic(server);
 
         this.updateQueue = new LinkedList<>();
         this.running = false;
@@ -40,6 +40,16 @@ public class Game implements Runnable {
 
     public void stop() {
         running = false;
+    }
+
+    // replace both below functions, unnecessary, make gameLogic public
+    public void addPlayer(ClientHandler clientHandler) {
+       // simply calls gameLogic to add new player
+       this.gameLogic.addPlayer(clientHandler);
+    }
+
+    public void removePlayer(ClientHandler clientHandler) {
+       this.gameLogic.removePlayer(clientHandler);
     }
 
     /**
@@ -108,4 +118,6 @@ public class Game implements Runnable {
         }
         stop();
     }
+
+
 }

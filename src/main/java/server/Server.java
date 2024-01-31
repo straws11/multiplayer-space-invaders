@@ -23,7 +23,7 @@ public class Server {
 
     public void startServer() {
         System.out.println("Server starting...");
-        game = new Game(); // TODO move
+        game = new Game(this); // TODO move
 
         try {
             // continuously accept new incoming connections and add client handlers for each
@@ -41,17 +41,27 @@ public class Server {
                     System.out.println("SERVER: Game started");
                     gameStarted = true;
                 }
+
+                if (gameStarted) { // TODO also probably move this?
+                    game.addPlayer(newClient);
+                }
+
             }
         } catch (IOException e) {
             closeServerSocket();
         }
     }
 
-    private void updateClients(Object stateUpdates) {
+    public void updateClients(Object stateUpdates) {
         for (ClientHandler handler: connectedClients) {
             handler.updateClient(stateUpdates);
         }
     }
+
+    public void updateClient(ClientHandler handler, Object update) {
+        handler.updateClient(update);
+    }
+
 
     public void closeServerSocket() {
         try {
@@ -64,15 +74,9 @@ public class Server {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(1234);
-        Server server = new Server(serverSocket);
-
-        server.startServer();
-    }
-
     public void removeClientHandler(ClientHandler clientHandler) {
         connectedClients.remove(clientHandler);
+        this.game.removePlayer(clientHandler);
         System.out.println("SERVER: Client disconnected");
         // end game if no more clients are connected
         if (connectedClients.isEmpty()) {
@@ -88,4 +92,11 @@ public class Server {
     public void updateGameInput(PlayerInput playerInput) {
         this.game.enqueuePlayerInput(playerInput);
     }
+    public static void main(String[] args) throws IOException {
+        ServerSocket serverSocket = new ServerSocket(1234);
+        Server server = new Server(serverSocket);
+
+        server.startServer();
+    }
+
 }

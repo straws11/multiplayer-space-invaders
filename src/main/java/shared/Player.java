@@ -1,17 +1,20 @@
 package shared;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public class Player {
+public class Player implements Serializable {
 
     private int pos;
+    private int id;
     private int lives;
     private Color color;
 
-    public Player(Color playerColor) {
+    public Player(int id, Color playerColor) {
         this.pos = 0;
         this.lives = 3; // or some amount
         this.color = playerColor;
+        this.id = id;
     }
 
     public void move(int x) {
@@ -20,6 +23,10 @@ public class Player {
 
     public void fire() {
 
+    }
+
+    public int getId() {
+        return this.id;
     }
 
     public void getHit() {

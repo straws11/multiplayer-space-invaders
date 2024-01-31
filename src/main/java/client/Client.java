@@ -11,8 +11,8 @@ public class Client {
     public ClientGameGUI gameGui;
 
     public Client() {
-        this.clientGameLogic = new ClientGameLogic();
-        this.networkManager = new ClientNetworkManager();
+        this.clientGameLogic = new ClientGameLogic(this);
+        this.networkManager = new ClientNetworkManager(this);
         this.gameGui = new ClientGameGUI(this);
     }
 

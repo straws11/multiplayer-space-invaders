@@ -1,17 +1,21 @@
 package client;
 
+import shared.Player;
+
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class ClientNetworkManager {
 
     private Socket socket;
+    private Client client;
     private BufferedReader bufferedReader;
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
 
-    public ClientNetworkManager() {
-
+    public ClientNetworkManager(Client client) {
+        this.client = client;
     }
 
     public void connectToServer(String serverAddress, int port) {
@@ -35,13 +39,22 @@ public class ClientNetworkManager {
         new Thread( new Runnable() {
             @Override
             public void run() {
-                while (socket.isConnected()) {
+                while (socket.isConnected() && !socket.isClosed()) {
                     try {
                         Object receivedObject = objectInputStream.readObject();
-                        System.out.println("Object received from server");
-                        // TODO process object, update local display and GUI etc
+
+                        // handle incoming objects
+                        if (receivedObject instanceof Player) {
+                            System.out.println("Received initial local player data");
+                            client.clientGameLogic.setPlayer((Player) receivedObject);
+                        } else if (receivedObject instanceof ArrayList<?>) {
+                            System.out.println("Received updated list of players..");
+                            client.clientGameLogic.updateOnlinePlayers((ArrayList<Player>) receivedObject);
+                        }
+
                     } catch (IOException | ClassNotFoundException e) { // TODO i don't think ClassNotFound should go here
-                        e.printStackTrace();
+                        closeConnection();
+                        break;
                     }
                 }
             }

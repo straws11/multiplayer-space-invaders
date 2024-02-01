@@ -67,7 +67,6 @@ public class Game implements Runnable {
     private void processQueuedInput() {
         while (!updateQueue.isEmpty()) {
             PlayerInput nextInput = updateQueue.poll();
-
             int keyCode = nextInput.getKeyCode();
 
             switch (keyCode) {

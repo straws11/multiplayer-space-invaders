@@ -27,7 +27,8 @@ public class Sprite {
     }
 
     public void draw(Graphics g) {
-        g.drawRect(pos, spriteY, 20, 20);
+        g.setColor(this.color);
+        g.fillRect(pos, spriteY, 20, 20);
     }
 
 

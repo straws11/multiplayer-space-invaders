@@ -5,13 +5,14 @@ import shared.PlayerInput;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.*;
 import java.util.List;
 
 public class ClientGameGUI extends JFrame {
 
     private Client client;
-    private KeyboardInputHandler keyboardInputHandler;
     private JPanel mainPanel; // just the one that everything lives on
     private CardLayout cardLayout; // this allows switching between panels that live on mainpanel
     private JPanel startPanel;
@@ -22,10 +23,37 @@ public class ClientGameGUI extends JFrame {
 
     public ClientGameGUI(Client client) {
         super("Game Client");
-
         this.client = client;
         setupLayout();
-        keyboardInputHandler = new KeyboardInputHandler(this);
+        setupKeyBindings();
+    }
+
+    private void setupKeyBindings() {
+        JPanel contentPane = (JPanel) this.getContentPane();
+        int condition = JComponent.WHEN_IN_FOCUSED_WINDOW;
+        InputMap inputMap = contentPane.getInputMap(condition);
+        ActionMap actionMap = contentPane.getActionMap();
+
+        Map<String, Integer> keyBinds = Map.of(
+                "left", KeyEvent.VK_LEFT,
+                "right", KeyEvent.VK_RIGHT,
+                "space", KeyEvent.VK_SPACE
+        );
+
+        // create a binding in the input map and action map for each of the above
+        for (Map.Entry<String, Integer> entry: keyBinds.entrySet()) {
+            String key = entry.getKey();
+            Integer value = entry.getValue();
+
+            inputMap.put(KeyStroke.getKeyStroke(value, 0), key);
+            actionMap.put(key, new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    sendKeyPressCode(value);
+                }
+            });
+        }
+
     }
 
     private void setupLayout() {

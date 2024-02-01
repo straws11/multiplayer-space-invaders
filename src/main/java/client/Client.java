@@ -17,10 +17,9 @@ public class Client {
     }
 
     public static void main(String[] args) throws IOException {
-        Client client = new Client();
-
         // launch GUI
         SwingUtilities.invokeLater(() -> {
+            Client client = new Client();
             client.gameGui.setVisible(true);
         });
     }

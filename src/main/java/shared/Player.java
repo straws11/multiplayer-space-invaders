@@ -11,7 +11,7 @@ public class Player implements Serializable {
     protected Color color;
 
     public Player(int id, Color playerColor) {
-        this.pos = 0;
+        this.pos = (int) Math.floor(Math.random() * 100); // TODO change ofc
         this.lives = 3; // or some amount
         this.color = playerColor;
         this.id = id;

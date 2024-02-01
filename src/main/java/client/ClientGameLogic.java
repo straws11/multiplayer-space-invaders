@@ -18,14 +18,16 @@ public class ClientGameLogic {
     }
 
     /**
-     * Set initial player data, received from server upon connecting.
+     * Set initial player data, received from server only upon connecting;
      * @param localPlayer Player object with starting data
      */
     public void setPlayer(Player localPlayer) {
         this.player = localPlayer;
         this.playerId = localPlayer.getId();
         this.onlinePlayers.add(localPlayer);
-        this.client.gameGui.processUpdatedPlayers(this.onlinePlayers);
+        //client.gameGui.syncSpritesToPlayers(); don't think this is necessary here
+        // ^ should receive an arraylist with all players right after this method anyway
+        // this also means there aren't any sprites for the player yet, which should also be fine
     }
 
     /**
@@ -55,7 +57,8 @@ public class ClientGameLogic {
                 this.onlinePlayers.add(player);
             }
         }
-        this.client.gameGui.processUpdatedPlayers(this.onlinePlayers);
+        // remove, add, update sprites with new positional data etc, also redraws them
+        client.gameGui.gamePanel.syncSpritesToPlayers(onlinePlayers);
     }
 
 }

@@ -16,17 +16,14 @@ public class ClientGameGUI extends JFrame {
     private CardLayout cardLayout; // this allows switching between panels that live on mainpanel
     private JPanel startPanel;
     private JPanel gamePanel;
-    private Map<Integer, JLabel> playerSprites;
+
+    private Map<Integer, SpritePlayer> playerSprites;
 
     public ClientGameGUI(Client client) {
         super("Game Client");
 
         this.client = client;
         this.playerSprites = new HashMap<>();
-        // since I'm inheriting, setsize is like doing JFrame.setsize etc etc
-
-        // init and setup gui stuff
-        initializeComponents();
         setupLayout();
         keyboardInputHandler = new KeyboardInputHandler(this);
     }
@@ -37,26 +34,30 @@ public class ClientGameGUI extends JFrame {
      */
     public void processUpdatedPlayers(ArrayList<Player> updatedPlayers) {
         // remove players that are no longer present (not in updatedPlayers anymore)
-        List<Integer> playerIds = updatedPlayers.stream().map(Player::getId).toList();
-        //  iterator approach to avoid skipping over deleted elements, remove from gamePanel
-        for (Iterator<Map.Entry<Integer, JLabel>> iterator = playerSprites.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry<Integer, JLabel> entry = iterator.next();
-            if (!playerIds.contains(entry.getKey())) {
-                iterator.remove();
-                gamePanel.remove(entry.getValue());
+        List<Integer> newPlayerIds = updatedPlayers.stream().map(Player::getId).toList();
+        // using this iterator is because it doesn't skip over elements when they are deleted
+        for (Iterator<Map.Entry<Integer, SpritePlayer>> iterator = playerSprites.entrySet().iterator(); iterator.hasNext();) {
+            Map.Entry<Integer, SpritePlayer> entry = iterator.next();
+            SpritePlayer sprite = entry.getValue();
+            if (!newPlayerIds.contains(sprite.getId())) {
+                sprite.removeSprite(); // delete the graphical sprite
+                iterator.remove(); // remove from tracked list of SpritePlayers
             }
         }
 
-        // either draw or add and draw player sprites
+        // add any new sprites from new players
         for (Player player: updatedPlayers) {
-            int pId = player.getId();
-            if (!playerSprites.containsKey(pId)) {
-                // add sprites for each new player
-                JLabel newSprite = new JLabel(Integer.toString(pId));
-                this.playerSprites.put(pId, newSprite);
-                gamePanel.add(newSprite);
+            if (!playerSprites.containsKey(player.getId())) {
+                // add sprites for new player
+                SpritePlayer newSprite = new SpritePlayer(player.getId(), player.getColor(), player, this);
+                this.playerSprites.put(player.getId(), newSprite);
             }
-            drawPlayer(playerSprites.get(pId));
+        }
+
+        // update each player's data and draw it
+        for (Player updatedPlayer : updatedPlayers) { // both map and updatedPlayers should contain all the same clients now
+            SpritePlayer sprite = playerSprites.get(updatedPlayer.getId());
+            sprite.updatePlayerData(updatedPlayer); // drawing will happen in here
         }
 
         gamePanel.revalidate();
@@ -67,7 +68,7 @@ public class ClientGameGUI extends JFrame {
      * Draw a single player's sprite
      * @param sprite
      */
-    private void drawPlayer(JLabel sprite) {
+    private void drawPlayer(SpritePlayer sprite) {
 
     }
 

@@ -5,10 +5,10 @@ import java.io.Serializable;
 
 public class Player implements Serializable {
 
-    private int pos;
-    private int id;
-    private int lives;
-    private Color color;
+    protected int pos;
+    protected int id;
+    protected int lives;
+    protected Color color;
 
     public Player(int id, Color playerColor) {
         this.pos = 0;
@@ -39,5 +39,13 @@ public class Player implements Serializable {
 
     public Color getColor() {
         return this.color;
+    }
+
+    public int getLives() {
+        return this.lives;
+    }
+
+    public int getPos() {
+        return this.pos;
     }
 }

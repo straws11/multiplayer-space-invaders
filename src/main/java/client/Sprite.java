@@ -24,7 +24,6 @@ public class Sprite {
      */
     public void updatePlayerData(Player newPlayer) {
         this.pos = newPlayer.getPos(); // TODO can change to just updatePlayerPos if that's all
-        System.out.println(this.pos);
     }
 
     public void draw(Graphics g) {

@@ -5,6 +5,8 @@ import shared.Player;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ClientNetworkManager {
 
@@ -45,8 +47,12 @@ public class ClientNetworkManager {
 
                         // handle incoming objects
                         if (receivedObject instanceof Player) {
-                            System.out.println("Received initial local player data");
-                            client.clientGameLogic.setPlayer((Player) receivedObject);
+                            if (client.clientGameLogic.getPlayerId() == -1) {
+                                System.out.println("Received initial local player data");
+                                client.clientGameLogic.setPlayer((Player) receivedObject);
+                            } else { // some player's updated data
+                                client.clientGameLogic.updatePlayerData((Player) receivedObject);
+                            }
                         } else if (receivedObject instanceof ArrayList<?>) {
                             System.out.println("Received updated list of players..");
                             client.clientGameLogic.updateOnlinePlayers((ArrayList<Player>) receivedObject);

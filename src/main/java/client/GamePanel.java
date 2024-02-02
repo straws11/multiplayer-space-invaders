@@ -34,8 +34,7 @@ public class GamePanel extends JPanel {
                 sprites.put(player.getId(), newSprite);
             } else {
                 // player does already exist, simply update their data
-                Sprite sprite = sprites.get(player.getId());
-                sprite.updatePlayerData(player); // after this, drawing is handled in paintComponent
+                syncSprite(player); // after this, drawing is handled in paintComponent
             }
         }
 
@@ -43,6 +42,17 @@ public class GamePanel extends JPanel {
         repaint();
 
     }
+
+    /**
+     * Sync the player's corresponding sprite's data
+     * @param player
+     */
+    public void syncSprite(Player player) {
+        Sprite sprite = sprites.get(player.getId());
+        sprite.updatePlayerData(player);
+        repaint();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

@@ -14,6 +14,7 @@ public class ClientGameLogic {
 
     public ClientGameLogic(Client client) {
         this.client = client;
+        this.playerId = -1;
         this.onlinePlayers = new ArrayList<>();
     }
 
@@ -59,6 +60,15 @@ public class ClientGameLogic {
         }
         // remove, add, update sprites with new positional data etc, also redraws them
         client.gameGui.gamePanel.syncSpritesToPlayers(onlinePlayers);
+    }
+
+    /**
+     * Update a single player's data, coming in from the server
+     * @param player the update player's data
+     */
+    public void updatePlayerData(Player player) {
+        client.gameGui.gamePanel.syncSprite(player);
+        // TODO optimize
     }
 
     public int getPlayerId() {

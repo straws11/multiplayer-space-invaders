@@ -52,7 +52,7 @@ public class GameLogic {
         Player player = getPlayerById(playerId);
         if (player != null && player.getPos() != 0) {
             player.move(-5);
-            server.updateClients(new ArrayList<>(playerMapping.values()));
+            server.updateClients(player);
             System.out.println("Player " + player.getId() + " moved left");
         }
     }
@@ -61,7 +61,7 @@ public class GameLogic {
         Player player = getPlayerById(playerId);
         if (player != null && player.getPos() != 400) {
             player.move(5);
-            server.updateClients(new ArrayList<>(playerMapping.values()));
+            server.updateClients(player);
             System.out.println("Player " + player.getId() + " moved right");
         }
     }

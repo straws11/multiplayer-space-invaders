@@ -2,7 +2,6 @@ package client;
 
 import javax.swing.*;
 import java.io.*;
-import java.net.Socket;
 
 public class Client {
 

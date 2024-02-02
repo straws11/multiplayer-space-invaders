@@ -68,16 +68,17 @@ public class Game implements Runnable {
         while (!updateQueue.isEmpty()) {
             PlayerInput nextInput = updateQueue.poll();
             int keyCode = nextInput.getKeyCode();
+            int playerId = nextInput.getPlayerId();
 
             switch (keyCode) {
                 case KeyEvent.VK_LEFT:
-                    gameLogic.moveLeft();
+                    gameLogic.moveLeft(playerId);
                     break;
                 case KeyEvent.VK_RIGHT:
-                    gameLogic.moveRight();
+                    gameLogic.moveRight(playerId);
                     break;
                 case KeyEvent.VK_SPACE:
-                    gameLogic.shoot();
+                    gameLogic.shoot(playerId);
                     break;
                 default: // not a key relevant for this game
                     break;

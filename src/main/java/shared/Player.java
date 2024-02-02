@@ -48,4 +48,16 @@ public class Player implements Serializable {
     public int getPos() {
         return this.pos;
     }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "pos=" + pos +
+                ", id=" + id +
+                ", lives=" + lives +
+                ", color=" + color +
+                '}';
+    }
 }
+
+

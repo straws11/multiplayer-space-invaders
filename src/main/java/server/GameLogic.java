@@ -8,6 +8,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GameLogic {
     private GameStateChange gameStateChange;
@@ -23,7 +24,7 @@ public class GameLogic {
         this.gameStateChange = new GameStateChange();
         this.server = server;
         this.gameOver = false;
-        this.playerMapping = new HashMap<>();
+        this.playerMapping = new ConcurrentHashMap<>();
         this.idCountTracker = 0;
     }
 
@@ -47,16 +48,35 @@ public class GameLogic {
         this.server.updateClients(new ArrayList<>(playerMapping.values()));
     }
 
-    public void moveLeft() {
-        System.out.println("Move left!");
+    public void moveLeft(int playerId) {
+        Player player = getPlayerById(playerId);
+        if (player != null && player.getPos() != 0) {
+            player.move(-5);
+            server.updateClients(new ArrayList<>(playerMapping.values()));
+            System.out.println("Player " + player.getId() + " moved left");
+        }
     }
 
-    public void moveRight() {
-        System.out.println("Move Right");
+    public void moveRight(int playerId) {
+        Player player = getPlayerById(playerId);
+        if (player != null && player.getPos() != 400) {
+            player.move(5);
+            server.updateClients(new ArrayList<>(playerMapping.values()));
+            System.out.println("Player " + player.getId() + " moved right");
+        }
     }
 
-    public void shoot() {
+    public void shoot(int playerId) {
         System.out.println("Shoot!");
+    }
+
+    private Player getPlayerById(int playerId) {
+        for (Player player: this.playerMapping.values()) {
+            if (player.getId() == playerId) {
+                return player;
+            }
+        }
+        return null;
     }
 
     public void enemyHit() {

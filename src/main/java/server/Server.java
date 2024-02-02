@@ -52,7 +52,7 @@ public class Server {
         }
     }
 
-    public void updateClients(Object stateUpdates) {
+    public synchronized void updateClients(Object stateUpdates) {
         for (ClientHandler handler: connectedClients) {
             handler.updateClient(stateUpdates);
         }

@@ -61,4 +61,8 @@ public class ClientGameLogic {
         client.gameGui.gamePanel.syncSpritesToPlayers(onlinePlayers);
     }
 
+    public int getPlayerId() {
+        return this.playerId;
+    }
+
 }

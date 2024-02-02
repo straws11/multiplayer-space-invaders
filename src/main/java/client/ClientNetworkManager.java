@@ -41,7 +41,7 @@ public class ClientNetworkManager {
             public void run() {
                 while (socket.isConnected() && !socket.isClosed()) {
                     try {
-                        Object receivedObject = objectInputStream.readObject();
+                        Object receivedObject = objectInputStream.readUnshared();
 
                         // handle incoming objects
                         if (receivedObject instanceof Player) {
@@ -67,7 +67,8 @@ public class ClientNetworkManager {
      */
     public void sendObject(Object object) { // TODO keyCodes might be the only thing, so can change?
         try {
-            objectOutputStream.writeObject(object);
+            objectOutputStream.reset();
+            objectOutputStream.writeUnshared(object);
             objectOutputStream.flush();
         } catch (IOException e) {
             closeConnection();

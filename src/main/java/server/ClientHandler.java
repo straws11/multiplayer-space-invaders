@@ -1,9 +1,11 @@
 package server;
 
+import shared.Player;
 import shared.PlayerInput;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class ClientHandler implements Runnable {
 
@@ -43,9 +45,14 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public void updateClient(Object updates) {
+    public synchronized void updateClient(Object updates) {
         try {
-            this.objectOutputStream.writeObject(updates);
+            if (updates instanceof ArrayList<?>) {
+                ArrayList<Player> yo = (ArrayList<Player>) updates;
+                yo.forEach(System.out::println);
+            }
+            objectOutputStream.reset();
+            this.objectOutputStream.writeUnshared(updates);
             this.objectOutputStream.flush();
         } catch (IOException e) {
             closeConnection("Failed to update client with latest updates");
@@ -88,7 +95,7 @@ public class ClientHandler implements Runnable {
         try {
             while (socket.isConnected() && !socket.isClosed()) {
                 try {
-                    Object receivedObject = objectInputStream.readObject();
+                    Object receivedObject = objectInputStream.readUnshared();
                     // can process based on type:
                     // if (receivedObject instanceof GameState) doThis()
                     if (receivedObject instanceof PlayerInput) {

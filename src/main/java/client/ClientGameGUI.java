@@ -105,7 +105,7 @@ public class ClientGameGUI extends JFrame {
     }
 
     public void sendKeyPressCode(int keyCode) {
-        PlayerInput playerInput = new PlayerInput(keyCode);
+        PlayerInput playerInput = new PlayerInput(keyCode, client.clientGameLogic.getPlayerId());
         client.networkManager.sendObject(playerInput);
     }
 }

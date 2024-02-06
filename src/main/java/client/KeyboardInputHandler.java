@@ -15,7 +15,6 @@ public class KeyboardInputHandler implements KeyListener {
     @Override
     public void keyTyped(KeyEvent e) {
         // not necessary
-        System.out.println("why");
     }
 
     @Override

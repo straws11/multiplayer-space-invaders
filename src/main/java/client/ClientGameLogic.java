@@ -1,21 +1,30 @@
 package client;
 
+import shared.Bullet;
 import shared.Player;
+import shared.SmallInvader;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientGameLogic {
 
+    private static final int GAP_X = 20; // gap between enemies horizontally
     private Player player;
     private int playerId;
     private ArrayList<Player> onlinePlayers;
     private Client client;
+    private ArrayList<SmallInvader> invaders; // example
+    private ConcurrentHashMap<Integer, Bullet> bulletMap;
 
     public ClientGameLogic(Client client) {
         this.client = client;
         this.playerId = -1;
         this.onlinePlayers = new ArrayList<>();
+        this.invaders = new ArrayList<>();
+        this.bulletMap = new ConcurrentHashMap<>();
     }
 
     /**
@@ -59,7 +68,7 @@ public class ClientGameLogic {
             }
         }
         // remove, add, update sprites with new positional data etc, also redraws them
-        client.gameGui.gamePanel.syncSpritesToPlayers(onlinePlayers);
+        client.gameGui.gamePanel.syncSpritesToPlayers(this.onlinePlayers);
     }
 
     /**
@@ -69,6 +78,30 @@ public class ClientGameLogic {
     public void updatePlayerData(Player player) {
         client.gameGui.gamePanel.syncSprite(player);
         // TODO optimize
+    }
+
+    /**
+     * Sync exact coords of all enemies client-side
+     * @param coords top and left coordinates of the enemies, used to calculate all enemies' individual coordinates
+     */
+    public void updateEnemyPositions(int[] coords) {
+        // TODO update for 2d
+        for (int i = 0; i < invaders.size(); i++) {
+            invaders.get(i).setX(i * GAP_X + 20); // using i to space out
+        }
+    }
+
+    /**
+     * Sync exact coords of all bullets client-side, removing and adding clients bullets as needed
+     */
+    public void updateBulletPositions(ConcurrentHashMap<Integer, Bullet> bullets) {
+        // remove no longer existing bullets
+        this.bulletMap.entrySet().removeIf(entry -> !bullets.contains(entry.getKey()));
+        // add or update bullets
+        this.bulletMap.putAll(bullets);
+        // remove sprites of no longer existing bullets
+        // add new sprites for new bullets
+        client.gameGui.gamePanel.syncSpritesToBullets(this.bulletMap);
     }
 
     public int getPlayerId() {

@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class Sprite {
 
-    private static int spriteY = 100;
+    private static final int SPRITE_Y= 50;
     private Player serverPlayer;
     private int pos;
     private Color color;
@@ -28,7 +28,7 @@ public class Sprite {
 
     public void draw(Graphics g) {
         g.setColor(this.color);
-        g.fillRect(pos, spriteY, 20, 20);
+        g.fillRect(pos, SPRITE_Y, 20, 20);
     }
 
 

@@ -37,7 +37,7 @@ public class ClientGameGUI extends JFrame {
         Map<String, Integer> keyBinds = Map.of(
                 "left", KeyEvent.VK_LEFT,
                 "right", KeyEvent.VK_RIGHT,
-                "space", KeyEvent.VK_SPACE
+                "down", KeyEvent.VK_DOWN
         );
 
         // create a binding in the input map and action map for each of the above

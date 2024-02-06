@@ -11,6 +11,7 @@ public class Game implements Runnable {
 
     private GameStateChange gameStateChange;
     private GameLogic gameLogic;
+    private Server server;
 
     private Queue<PlayerInput> updateQueue;
 
@@ -18,7 +19,7 @@ public class Game implements Runnable {
     public Game(Server server) {
         this.gameStateChange = new GameStateChange();
         this.gameLogic = new GameLogic(server);
-
+        this.server = server;
         this.updateQueue = new LinkedList<>();
         this.running = false;
     }
@@ -59,6 +60,10 @@ public class Game implements Runnable {
         // process all new inputs received since last time update() was called
         processQueuedInput();
         // TODO enemies need to move again, bullets further travel etc??
+        gameLogic.shiftEnemies();
+        gameLogic.shiftBullets();
+        //gameLogic.handleCollisions();
+        server.updateClients(gameLogic.getBulletMap());
     }
 
     /**
@@ -77,7 +82,8 @@ public class Game implements Runnable {
                 case KeyEvent.VK_RIGHT:
                     gameLogic.moveRight(playerId);
                     break;
-                case KeyEvent.VK_SPACE:
+                case KeyEvent.VK_DOWN:
+                    System.out.println("why");
                     gameLogic.shoot(playerId);
                     break;
                 default: // not a key relevant for this game

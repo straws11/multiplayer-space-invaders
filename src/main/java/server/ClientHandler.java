@@ -47,11 +47,7 @@ public class ClientHandler implements Runnable {
 
     public synchronized void updateClient(Object updates) {
         try {
-            if (updates instanceof ArrayList<?>) {
-                ArrayList<Player> yo = (ArrayList<Player>) updates;
-                yo.forEach(System.out::println);
-            }
-            objectOutputStream.reset();
+            this.objectOutputStream.reset();
             this.objectOutputStream.writeUnshared(updates);
             this.objectOutputStream.flush();
         } catch (IOException e) {

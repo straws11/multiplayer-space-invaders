@@ -1,12 +1,15 @@
 package client;
 
+import shared.Bullet;
 import shared.Player;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientNetworkManager {
 
@@ -56,6 +59,12 @@ public class ClientNetworkManager {
                         } else if (receivedObject instanceof ArrayList<?>) {
                             System.out.println("Received updated list of players..");
                             client.clientGameLogic.updateOnlinePlayers((ArrayList<Player>) receivedObject);
+                        } else if (receivedObject instanceof int[]) {
+                            System.out.println("Received enemies lefttop coords");
+                            client.clientGameLogic.updateEnemyPositions((int[]) receivedObject);
+                        } else if (receivedObject instanceof ConcurrentHashMap<?,?>) {
+                            System.out.println("Bullet data received");
+                            client.clientGameLogic.updateBulletPositions((ConcurrentHashMap<Integer, Bullet>) receivedObject);
                         }
 
                     } catch (IOException | ClassNotFoundException e) { // TODO i don't think ClassNotFound should go here
